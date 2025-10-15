@@ -43,13 +43,24 @@ def choose_sections(min_n=3, max_n=5):
     # Повертаємо в правильному порядку
     return [intro] + core + [outro]
 
-def planning_prompt(topic: str, style: str):
+def planning_prompt(topic: str, style: str, existing_titles: list = None):
     sections = choose_sections()
     style_instr = STYLE_INSTRUCTIONS.get(style, STYLE_INSTRUCTIONS["educational"])
+
+    # Новий блок для додавання інструкції про унікальність
+    uniqueness_instruction = ""
+    if existing_titles:
+        titles_str = '", "'.join(existing_titles)
+        uniqueness_instruction = f'''
+CRITICAL ADDITIONAL RULE:
+You MUST generate a completely new title that is semantically different from these already used titles: "{titles_str}".
+Focus on a different angle, benefit, or keyword.
+'''
     
     prompt = f"""
 You are an expert web content planner creating a structure for a website about: "{topic}".
 Style: {style} - {style_instr}
+{uniqueness_instruction} # <--- ДОДАНО НОВУ ІНСТРУКЦІЮ
 
 Create a JSON structure with these fields:
 - title: A compelling, clear title (max 70 characters) that captures the essence of {topic}

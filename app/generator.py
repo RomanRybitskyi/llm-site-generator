@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 from huggingface_hub import InferenceClient
 from jinja2 import Environment, FileSystemLoader
 from app.prompts import planning_prompt, writing_prompt
-from app.utils import make_uuid, timestamp_now, ensure_sites_dir
+from app.utils import make_uuid, timestamp_now, ensure_sites_dir, count_tokens
 import re
 import random
 from PIL import Image
@@ -77,6 +77,8 @@ class SiteGenerator:
         logger.info(f"Randomize temperature: {req.randomize_temperature}")
         
         results = []
+        batch_titles = [] # <--- Створюємо список для зберігання заголовків поточної сесії
+
         for i in range(req.pages_count):
             logger.info(f"Generating page {i+1}/{req.pages_count}")
             item = await self.generate_one_site(
@@ -86,11 +88,14 @@ class SiteGenerator:
                 req.top_p, 
                 req.max_tokens,
                 req.generate_image,
-                req.randomize_temperature,  # НОВИЙ ПАРАМЕТР
-                req.temperature_min,         # НОВИЙ ПАРАМЕТР
-                req.temperature_max          # НОВИЙ ПАРАМЕТР
+                req.randomize_temperature,
+                req.temperature_min,
+                req.temperature_max,
+                existing_titles=batch_titles  # <--- Передаємо список вже створених заголовків
             )
             results.append(item)
+            if item.get("title"):
+                batch_titles.append(item["title"])
         
         self.logs.append({
             "topic": req.topic, 
@@ -105,8 +110,10 @@ class SiteGenerator:
                                 top_p: float, max_tokens: int, generate_image: bool = True,
                                 randomize_temperature: bool = False,
                                 temperature_min: float = 0.5,
-                                temperature_max: float = 1.2):
+                                temperature_max: float = 1.2,
+                                existing_titles: list = None): # <--- Додаємо новий параметр
         """Генерація одного сайту з покращеною варіативністю та контролем якості."""
+
         
         # 1) ВИЗНАЧЕННЯ ТЕМПЕРАТУРИ
         if randomize_temperature:
@@ -120,7 +127,9 @@ class SiteGenerator:
             logger.info(f"📊 Temperature with slight variation: {actual_temp:.2f} (base: {temperature})")
         
         # 2) Планування структури
-        plan_prompt_text = planning_prompt(topic, style)
+        plan_prompt_text = planning_prompt(topic, style, existing_titles=existing_titles) 
+        planning_tokens = count_tokens(plan_prompt_text)
+        logger.info(f"Planning prompt tokens: {planning_tokens}")
         plan_resp = inference(plan_prompt_text, params={
             "temperature": actual_temp, 
             "top_p": top_p, 
@@ -128,7 +137,9 @@ class SiteGenerator:
         })
         
         plan_json = self._parse_plan_response(plan_resp, topic)
+        # ВАЖЛИВО: ми все ще залишаємо _ensure_unique_title як фінальну перевірку!
         plan_json["title"] = self._ensure_unique_title(plan_json.get("title", f"{topic} Guide"))
+
 
         # 3) ОПЦІЙНА ГЕНЕРАЦІЯ ЗОБРАЖЕННЯ
         site_id = make_uuid()
@@ -145,7 +156,7 @@ class SiteGenerator:
             content_temp = max(0.1, min(1.5, actual_temp + random.uniform(-0.05, 0.05)))
             logger.info(f"📝 Content temperature: {content_temp:.2f}")
         
-        generated_sections = self._generate_sections(
+        generated_sections, writing_tokens = self._generate_sections( # <--- Отримуємо токени
             topic, style, plan_json, content_temp, top_p, max_tokens
         )
         
@@ -169,6 +180,8 @@ class SiteGenerator:
             "style": style,
             "sections_count": len(generated_sections),
             "temperature_used": round(actual_temp, 2),  # НОВИЙ ПАРАМЕТР
+            "planning_tokens": planning_tokens, # <--- ЗБЕРІГАЄМО В ЛОГ
+            "writing_tokens": writing_tokens,   # <--- ЗБЕРІГАЄМО В ЛОГ
             "created_at": timestamp_now()
         }
         self.logs.append(record)
@@ -205,19 +218,19 @@ class SiteGenerator:
             }
 
     def _ensure_unique_title(self, title: str) -> str:
-        """Гарантує унікальність заголовка."""
-        used_titles = {log.get("title") for log in self.logs if log.get("title")}
-        original_title = title
-        suffix_count = 1
+        # """Гарантує унікальність заголовка."""
+        # used_titles = {log.get("title") for log in self.logs if log.get("title")}
+        # original_title = title
+        # suffix_count = 1
         
-        while title in used_titles:
-            title = f"{original_title} ({make_uuid()[:6]})"
-            suffix_count += 1
-            if suffix_count > 10:
-                break
+        # while title in used_titles:
+        #     title = f"{original_title} ({make_uuid()[:6]})"
+        #     suffix_count += 1
+        #     if suffix_count > 10:
+        #         break
         
-        if title != original_title:
-            logger.info(f"Title made unique: {title}")
+        # if title != original_title:
+        #     logger.info(f"Title made unique: {title}")
         return title
 
     def _generate_and_save_image(self, plan_json: dict, topic: str, site_id: str) -> Optional[str]:
@@ -242,7 +255,8 @@ class SiteGenerator:
         
         sections_data = plan_json.get("sections", [])
         write_prompt = writing_prompt(topic, style, plan_json.get("title", ""), sections_data)
-        
+        writing_tokens = count_tokens(write_prompt)
+        logger.info(f"Writing prompt tokens: {writing_tokens}")
         logger.info(f"Generating content for {len(sections_data)} sections")
         
         write_resp = inference(write_prompt, params={
@@ -253,7 +267,7 @@ class SiteGenerator:
         
         full_text = write_resp if isinstance(write_resp, str) else write_resp.get("generated_text", "")
         
-        return self._extract_sections(full_text, sections_data)
+        return self._extract_sections(full_text, sections_data), writing_tokens
 
     def _extract_sections(self, full_text: str, sections_data: list) -> list:
         """Витягує секції з згенерованого тексту."""
