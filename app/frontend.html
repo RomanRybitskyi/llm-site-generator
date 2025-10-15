@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Site Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .slider-group {
+            margin-bottom: 20px;
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #e0e0e0;
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+        }
+
+        input[type="range"]:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .temp-mode-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 2px solid #e0e0e0;
+        }
+
+        .temp-mode-section.random-active {
+            border-color: #ff6b6b;
+            background: #fff5f5;
+        }
+
+        .mode-toggle {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .mode-btn {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .mode-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .mode-btn.random-active {
+            background: #ff6b6b;
+            color: white;
+            border-color: #ff6b6b;
+        }
+
+        .range-inputs {
+            display: none;
+            gap: 15px;
+        }
+
+        .range-inputs.active {
+            display: flex;
+        }
+
+        .range-input-group {
+            flex: 1;
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        .info-box.random {
+            background: #ffe3e3;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .results {
+            display: none;
+        }
+
+        .result-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+        }
+
+        .result-item h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .result-item p {
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .temp-badge {
+            display: inline-block;
+            background: #ff6b6b;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .result-item a {
+            display: inline-block;
+            padding: 8px 16px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: background 0.3s;
+        }
+
+        .result-item a:hover {
+            background: #764ba2;
+        }
+
+        .error {
+            background: #fee;
+            border-left: 4px solid #f44;
+            padding: 15px;
+            border-radius: 8px;
+            color: #c33;
+            margin-top: 15px;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+
+            .range-inputs {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 AI Site Generator</h1>
+            <p>Generate beautiful websites with AI in seconds</p>
+        </div>
+
+        <div class="card">
+            <form id="generateForm">
+                <div class="form-group">
+                    <label for="topic">Topic *</label>
+                    <input type="text" id="topic" name="topic" placeholder="e.g., Machine Learning, Cooking, Travel" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="style">Style *</label>
+                    <select id="style" name="style" required>
+                        <option value="educational">📚 Educational</option>
+                        <option value="marketing">💼 Marketing</option>
+                        <option value="technical">⚙️ Technical</option>
+                        <option value="minimalist">✨ Minimalist</option>
+                        <option value="creative">🎨 Creative</option>
+                        <option value="casual">💬 Casual</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="pages_count">Number of Pages</label>
+                    <input type="number" id="pages_count" name="pages_count" value="1" min="1" max="50">
+                </div>
+
+                <!-- НОВИЙ РОЗДІЛ: Temperature Mode -->
+                <div class="temp-mode-section" id="tempModeSection">
+                    <label>🌡️ Temperature Mode</label>
+                    <div class="mode-toggle">
+                        <button type="button" class="mode-btn active" id="fixedModeBtn">
+                            📌 Fixed Value
+                        </button>
+                        <button type="button" class="mode-btn" id="randomModeBtn">
+                            🎲 Random Range
+                        </button>
+                    </div>
+
+                    <!-- Fixed Temperature -->
+                    <div id="fixedTempSection">
+                        <div class="slider-group">
+                            <div class="slider-label">
+                                <label>Temperature</label>
+                                <span id="tempValue">0.8</span>
+                            </div>
+                            <input type="range" id="temperature" name="temperature" min="0.1" max="1.5" step="0.1" value="0.8">
+                        </div>
+                        <div class="info-box">
+                            Fixed temperature with ±10% variation per generation
+                        </div>
+                    </div>
+
+                    <!-- Random Temperature Range -->
+                    <div class="range-inputs" id="randomTempSection">
+                        <div class="range-input-group">
+                            <div class="slider-label">
+                                <label>Min Temperature</label>
+                                <span id="tempMinValue">0.5</span>
+                            </div>
+                            <input type="range" id="temperature_min" min="0.1" max="1.5" step="0.1" value="0.5">
+                        </div>
+                        <div class="range-input-group">
+                            <div class="slider-label">
+                                <label>Max Temperature</label>
+                                <span id="tempMaxValue">1.2</span>
+                            </div>
+                            <input type="range" id="temperature_max" min="0.1" max="1.5" step="0.1" value="1.2">
+                        </div>
+                    </div>
+                    <div class="info-box random" id="randomInfo" style="display: none;">
+                        🎲 Each generation will use a completely random temperature between min and max
+                    </div>
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-label">
+                        <label>Top P (Diversity)</label>
+                        <span id="topPValue">0.95</span>
+                    </div>
+                    <input type="range" id="top_p" name="top_p" min="0.1" max="1.0" step="0.05" value="0.95">
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-label">
+                        <label>Max Tokens</label>
+                        <span id="tokensValue">1200</span>
+                    </div>
+                    <input type="range" id="max_tokens" name="max_tokens" min="500" max="3000" step="100" value="1200">
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="generate_image" name="generate_image" checked>
+                    <label for="generate_image" style="margin-bottom: 0;">Generate AI Image</label>
+                </div>
+
+                <button type="submit" class="btn" id="submitBtn">Generate Sites</button>
+            </form>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Generating your sites... This may take a minute.</p>
+            </div>
+
+            <div class="error" id="error"></div>
+        </div>
+
+        <div class="card results" id="results">
+            <h2>✅ Generated Sites</h2>
+            <div id="resultsList"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://127.0.0.1:8000';
+        let isRandomMode = false;
+        
+        // Temperature Mode Toggle
+        document.getElementById('fixedModeBtn').addEventListener('click', () => {
+            isRandomMode = false;
+            document.getElementById('fixedModeBtn').classList.add('active');
+            document.getElementById('randomModeBtn').classList.remove('active', 'random-active');
+            document.getElementById('fixedTempSection').style.display = 'block';
+            document.getElementById('randomTempSection').classList.remove('active');
+            document.getElementById('randomInfo').style.display = 'none';
+            document.getElementById('tempModeSection').classList.remove('random-active');
+        });
+
+        document.getElementById('randomModeBtn').addEventListener('click', () => {
+            isRandomMode = true;
+            document.getElementById('randomModeBtn').classList.add('active', 'random-active');
+            document.getElementById('fixedModeBtn').classList.remove('active');
+            document.getElementById('fixedTempSection').style.display = 'none';
+            document.getElementById('randomTempSection').classList.add('active');
+            document.getElementById('randomInfo').style.display = 'block';
+            document.getElementById('tempModeSection').classList.add('random-active');
+        });
+
+        // Update slider values
+        document.getElementById('temperature').addEventListener('input', (e) => {
+            document.getElementById('tempValue').textContent = e.target.value;
+        });
+
+        document.getElementById('temperature_min').addEventListener('input', (e) => {
+            const minVal = parseFloat(e.target.value);
+            const maxVal = parseFloat(document.getElementById('temperature_max').value);
+            
+            if (minVal >= maxVal) {
+                document.getElementById('temperature_max').value = (minVal + 0.1).toFixed(1);
+                document.getElementById('tempMaxValue').textContent = (minVal + 0.1).toFixed(1);
+            }
+            
+            document.getElementById('tempMinValue').textContent = e.target.value;
+        });
+
+        document.getElementById('temperature_max').addEventListener('input', (e) => {
+            const maxVal = parseFloat(e.target.value);
+            const minVal = parseFloat(document.getElementById('temperature_min').value);
+            
+            if (maxVal <= minVal) {
+                document.getElementById('temperature_min').value = (maxVal - 0.1).toFixed(1);
+                document.getElementById('tempMinValue').textContent = (maxVal - 0.1).toFixed(1);
+            }
+            
+            document.getElementById('tempMaxValue').textContent = e.target.value;
+        });
+
+        document.getElementById('top_p').addEventListener('input', (e) => {
+            document.getElementById('topPValue').textContent = e.target.value;
+        });
+
+        document.getElementById('max_tokens').addEventListener('input', (e) => {
+            document.getElementById('tokensValue').textContent = e.target.value;
+        });
+
+        // Handle form submission
+        document.getElementById('generateForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                topic: document.getElementById('topic').value,
+                pages_count: parseInt(document.getElementById('pages_count').value),
+                style: document.getElementById('style').value,
+                top_p: parseFloat(document.getElementById('top_p').value),
+                max_tokens: parseInt(document.getElementById('max_tokens').value),
+                generate_image: document.getElementById('generate_image').checked,
+                randomize_temperature: isRandomMode
+            };
+
+            // Add temperature parameters based on mode
+            if (isRandomMode) {
+                formData.temperature_min = parseFloat(document.getElementById('temperature_min').value);
+                formData.temperature_max = parseFloat(document.getElementById('temperature_max').value);
+                formData.temperature = 0.8; // Fallback value
+            } else {
+                formData.temperature = parseFloat(document.getElementById('temperature').value);
+                formData.temperature_min = 0.5;
+                formData.temperature_max = 1.2;
+            }
+
+            // Show loading
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('submitBtn').disabled = true;
+            document.getElementById('error').style.display = 'none';
+            document.getElementById('results').style.display = 'none';
+
+            try {
+                const response = await fetch(`${API_URL}/generate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                displayResults(data);
+            } catch (error) {
+                document.getElementById('error').textContent = `Error: ${error.message}`;
+                document.getElementById('error').style.display = 'block';
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('submitBtn').disabled = false;
+            }
+        });
+
+        function displayResults(results) {
+            const resultsList = document.getElementById('resultsList');
+            resultsList.innerHTML = '';
+
+            results.forEach((result, index) => {
+                const tempBadge = result.temperature_used 
+                    ? `<span class="temp-badge">🌡️ ${result.temperature_used}</span>`
+                    : '';
+                
+                const item = document.createElement('div');
+                item.className = 'result-item';
+                item.innerHTML = `
+                    <h3>${result.title || 'Untitled'}${tempBadge}</h3>
+                    <p><strong>ID:</strong> ${result.site_id}</p>
+                    <p><strong>Style:</strong> ${result.style}</p>
+                    <p><strong>Sections:</strong> ${result.sections_count}</p>
+                    ${result.image_path ? '<p>✅ Image generated</p>' : '<p>⚠️ No image</p>'}
+                    <a href="${API_URL}/site/${result.site_id}" target="_blank">View Site →</a>
+                `;
+                resultsList.appendChild(item);
+            });
+
+            document.getElementById('results').style.display = 'block';
+        }
+    </script>
+</body>
+</html>

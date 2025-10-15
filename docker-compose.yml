@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: site-generator-app
+    ports:
+      - "8000:8000"
+    volumes:
+      # Мапуємо директорію sites для збереження згенерованих файлів
+      - ./sites:/app/sites
+      # Мапуємо код для розробки (опціонально, для hot-reload)
+      - ./app:/app/app
+    environment:
+      - PYTHONUNBUFFERED=1
+      - SITES_DIR=/app/sites
+      # Додайте ваш HuggingFace токен тут або через .env файл
+      - HUGGINGFACEHUB_API_TOKEN=${HUGGINGFACEHUB_API_TOKEN}
+    env_file:
+      - .env
+    restart: unless-stopped
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  sites:
+    driver: local

@@ -1,0 +1,14 @@
+fastapi
+uvicorn[standard]
+jinja2
+pydantic
+aiofiles
+httpx
+sqlalchemy[aio]
+alembic
+python-dotenv
+huggingface-hub
+python-multipart
+jinja2
+requests 
+Pillow
