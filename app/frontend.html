@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -33,7 +34,7 @@
         .header h1 {
             font-size: 2.5rem;
             margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
         }
 
         .header p {
@@ -45,7 +46,7 @@
             background: white;
             border-radius: 16px;
             padding: 30px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             margin-bottom: 20px;
         }
 
@@ -237,8 +238,13 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         .results {
@@ -298,11 +304,97 @@
             display: none;
         }
 
+        /* Responsive Similarity Matrix */
+        .similarity-matrix {
+            margin-top: 20px;
+        }
+
+        .similarity-matrix h3 {
+            margin-bottom: 15px;
+            color: #764ba2;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            overflow-y: auto;
+            max-height: 600px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background: white;
+            position: relative;
+        }
+
+        .similarity-table {
+            width: 100%;
+            min-width: 400px;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-size: 0.85rem;
+        }
+
+        .similarity-table thead {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: #f8f9fa;
+        }
+
+        .similarity-table th,
+        .similarity-table td {
+            padding: 10px;
+            border: 1px solid #e0e0e0;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .similarity-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+
+        .similarity-table th:first-child,
+        .similarity-table td.header-cell {
+            position: sticky;
+            left: 0;
+            z-index: 5;
+            background: #f8f9fa;
+            font-weight: 600;
+            text-align: left;
+            max-width: 200px;
+            min-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .similarity-table thead th:first-child {
+            z-index: 15;
+        }
+
+        .similarity-table td {
+            background: white;
+            min-width: 80px;
+        }
+
+        .similarity-table td.highlight-low {
+            background-color: #e3f2fd;
+        }
+
+        .similarity-table td.highlight-medium {
+            background-color: #fff9c4;
+        }
+
+        .similarity-table td.highlight-high {
+            background-color: #ffcdd2;
+        }
+
         @media (max-width: 768px) {
             .header h1 {
                 font-size: 2rem;
             }
-            
+
             .card {
                 padding: 20px;
             }
@@ -310,9 +402,29 @@
             .range-inputs {
                 flex-direction: column;
             }
+
+            .similarity-table {
+                font-size: 0.75rem;
+            }
+
+            .similarity-table th,
+            .similarity-table td {
+                padding: 6px;
+            }
+
+            .similarity-table th:first-child,
+            .similarity-table td.header-cell {
+                max-width: 120px;
+                min-width: 100px;
+            }
+
+            .similarity-table td {
+                min-width: 60px;
+            }
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="header">
@@ -324,7 +436,8 @@
             <form id="generateForm">
                 <div class="form-group">
                     <label for="topic">Topic *</label>
-                    <input type="text" id="topic" name="topic" placeholder="e.g., Machine Learning, Cooking, Travel" required>
+                    <input type="text" id="topic" name="topic" placeholder="e.g., Machine Learning, Cooking, Travel"
+                        required>
                 </div>
 
                 <div class="form-group">
@@ -344,7 +457,6 @@
                     <input type="number" id="pages_count" name="pages_count" value="1" min="1" max="50">
                 </div>
 
-                <!-- НОВИЙ РОЗДІЛ: Temperature Mode -->
                 <div class="temp-mode-section" id="tempModeSection">
                     <label>🌡️ Temperature Mode</label>
                     <div class="mode-toggle">
@@ -356,21 +468,20 @@
                         </button>
                     </div>
 
-                    <!-- Fixed Temperature -->
                     <div id="fixedTempSection">
                         <div class="slider-group">
                             <div class="slider-label">
                                 <label>Temperature</label>
                                 <span id="tempValue">0.8</span>
                             </div>
-                            <input type="range" id="temperature" name="temperature" min="0.1" max="1.5" step="0.1" value="0.8">
+                            <input type="range" id="temperature" name="temperature" min="0.1" max="1.5" step="0.1"
+                                value="0.8">
                         </div>
                         <div class="info-box">
                             Fixed temperature with ±10% variation per generation
                         </div>
                     </div>
 
-                    <!-- Random Temperature Range -->
                     <div class="range-inputs" id="randomTempSection">
                         <div class="range-input-group">
                             <div class="slider-label">
@@ -427,13 +538,14 @@
         <div class="card results" id="results">
             <h2>✅ Generated Sites</h2>
             <div id="resultsList"></div>
+            <div id="similarityMatrixContainer" class="similarity-matrix"></div>
         </div>
     </div>
 
     <script>
         const API_URL = 'http://127.0.0.1:8000';
         let isRandomMode = false;
-        
+
         // Temperature Mode Toggle
         document.getElementById('fixedModeBtn').addEventListener('click', () => {
             isRandomMode = false;
@@ -463,24 +575,20 @@
         document.getElementById('temperature_min').addEventListener('input', (e) => {
             const minVal = parseFloat(e.target.value);
             const maxVal = parseFloat(document.getElementById('temperature_max').value);
-            
             if (minVal >= maxVal) {
                 document.getElementById('temperature_max').value = (minVal + 0.1).toFixed(1);
                 document.getElementById('tempMaxValue').textContent = (minVal + 0.1).toFixed(1);
             }
-            
             document.getElementById('tempMinValue').textContent = e.target.value;
         });
 
         document.getElementById('temperature_max').addEventListener('input', (e) => {
             const maxVal = parseFloat(e.target.value);
             const minVal = parseFloat(document.getElementById('temperature_min').value);
-            
             if (maxVal <= minVal) {
                 document.getElementById('temperature_min').value = (maxVal - 0.1).toFixed(1);
                 document.getElementById('tempMinValue').textContent = (maxVal - 0.1).toFixed(1);
             }
-            
             document.getElementById('tempMaxValue').textContent = e.target.value;
         });
 
@@ -495,7 +603,7 @@
         // Handle form submission
         document.getElementById('generateForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
+
             const formData = {
                 topic: document.getElementById('topic').value,
                 pages_count: parseInt(document.getElementById('pages_count').value),
@@ -510,7 +618,7 @@
             if (isRandomMode) {
                 formData.temperature_min = parseFloat(document.getElementById('temperature_min').value);
                 formData.temperature_max = parseFloat(document.getElementById('temperature_max').value);
-                formData.temperature = 0.8; // Fallback value
+                formData.temperature = 0.8;
             } else {
                 formData.temperature = parseFloat(document.getElementById('temperature').value);
                 formData.temperature_min = 0.5;
@@ -552,11 +660,11 @@
             const resultsList = document.getElementById('resultsList');
             resultsList.innerHTML = '';
 
-            results.forEach((result, index) => {
-                const tempBadge = result.temperature_used 
-                    ? `<span class="temp-badge">🌡️ ${result.temperature_used}</span>`
-                    : '';
-                
+            const sites = results.sites || [];
+            sites.forEach((result) => {
+                const tempBadge = result.temperature_used ?
+                    `<span class="temp-badge">🌡️ ${result.temperature_used}</span>` :
+                    '';
                 const item = document.createElement('div');
                 item.className = 'result-item';
                 item.innerHTML = `
@@ -570,8 +678,66 @@
                 resultsList.appendChild(item);
             });
 
+            displaySimilarityMatrix(results.similarity_matrix);
             document.getElementById('results').style.display = 'block';
+        }
+
+        function displaySimilarityMatrix(matrixData) {
+            const container = document.getElementById('similarityMatrixContainer');
+            container.innerHTML = '';
+
+            if (!matrixData || !matrixData.scores || matrixData.scores.length < 2) {
+                return;
+            }
+
+            const { titles, scores } = matrixData;
+            
+            let tableHtml = `
+                <h3>📊 Semantic Similarity Matrix</h3>
+                <p style="margin-bottom: 15px; color: #666;">
+                    (1.0 = identical, < 0.5 = very different)
+                </p>
+                <div class="table-wrapper">
+                    <table class="similarity-table">
+                        <thead>
+                            <tr>
+                                <th>&nbsp;</th>
+            `;
+
+            titles.forEach(title => {
+                tableHtml += `<th>${escapeHtml(title)}</th>`;
+            });
+            tableHtml += '</tr></thead><tbody>';
+
+            scores.forEach((row, i) => {
+                tableHtml += `<tr><td class="header-cell">${escapeHtml(titles[i])}</td>`;
+                row.forEach((score, j) => {
+                    if (i === j) {
+                        tableHtml += `<td>1.00</td>`;
+                    } else {
+                        let className = '';
+                        if (score < 0.6) className = 'highlight-low';
+                        else if (score < 0.8) className = 'highlight-medium';
+                        else className = 'highlight-high';
+                        tableHtml += `<td class="${className}">${score.toFixed(2)}</td>`;
+                    }
+                });
+                tableHtml += '</tr>';
+            });
+
+            tableHtml += '</tbody></table></div>';
+            container.innerHTML = tableHtml;
+        }
+
+        function escapeHtml(unsafe) {
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
         }
     </script>
 </body>
+
 </html>

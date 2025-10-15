@@ -18,7 +18,6 @@ def ensure_sites_dir(path="./sites"):
     return path
 
 def count_tokens(text: str) -> int:
-    """Підраховує кількість токенів у тексті."""
     if not text:
         return 0
     return len(tokenizer.encode(text))

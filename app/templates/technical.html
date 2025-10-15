@@ -1,260 +1,324 @@
-<!-- app/templates/technical.html -->
 <!doctype html>
 <html lang="en">
+
 <head>
-<meta charset="utf-8">
-<title>{{ title }}</title>
-<meta name="description" content="{{ meta_description }}">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<style>
-/* Reset */
-*{margin:0;padding:0;box-sizing:border-box;}
+  <meta charset="utf-8">
+  <title>{{ title }}</title>
+  <meta name="description" content="{{ meta_description }}">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    /* Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-/* Technical Dark Theme */
-:root{
-  --bg-primary:#0d1117;
-  --bg-secondary:#161b22;
-  --bg-tertiary:#21262d;
-  --text-primary:#c9d1d9;
-  --text-secondary:#8b949e;
-  --accent:#58a6ff;
-  --accent-hover:#1f6feb;
-  --border:#30363d;
-  --success:#3fb950;
-  --warning:#d29922;
-}
+    /* Technical Dark Theme */
+    :root {
+      --bg-primary: #0d1117;
+      --bg-secondary: #161b22;
+      --bg-tertiary: #21262d;
+      --text-primary: #c9d1d9;
+      --text-secondary: #8b949e;
+      --accent: #58a6ff;
+      --accent-hover: #1f6feb;
+      --border: #30363d;
+      --success: #3fb950;
+      --warning: #d29922;
+    }
 
-body{
-  font-family:'Consolas','Monaco','Courier New',monospace;
-  line-height:1.7;
-  color:var(--text-primary);
-  background:var(--bg-primary);
-  padding:20px;
-}
+    body {
+      font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+      line-height: 1.7;
+      color: var(--text-primary);
+      background: var(--bg-primary);
+      padding: 20px;
+    }
 
-.container{
-  max-width:1100px;
-  margin:0 auto;
-}
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
 
-/* Header - Terminal Style */
-header{
-  background:var(--bg-secondary);
-  border:1px solid var(--border);
-  border-radius:6px;
-  padding:30px;
-  margin-bottom:24px;
-  position:relative;
-  overflow:hidden;
-}
+    /* Header - Terminal Style */
+    header {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 30px;
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
 
-header:before{
-  content:'';
-  position:absolute;
-  top:0;
-  left:0;
-  right:0;
-  height:30px;
-  background:var(--bg-tertiary);
-  border-bottom:1px solid var(--border);
-}
+    header:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 30px;
+      background: var(--bg-tertiary);
+      border-bottom: 1px solid var(--border);
+    }
 
-.terminal-buttons{
-  position:absolute;
-  top:8px;
-  left:12px;
-  display:flex;
-  gap:8px;
-  z-index:10;
-}
+    .terminal-buttons {
+      position: absolute;
+      top: 8px;
+      left: 12px;
+      display: flex;
+      gap: 8px;
+      z-index: 10;
+    }
 
-.terminal-buttons span{
-  width:12px;
-  height:12px;
-  border-radius:50%;
-  display:inline-block;
-}
+    .terminal-buttons span {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+    }
 
-.terminal-buttons .red{background:#ff5f56;}
-.terminal-buttons .yellow{background:#ffbd2e;}
-.terminal-buttons .green{background:#27c93f;}
+    .terminal-buttons .red {
+      background: #ff5f56;
+    }
 
-header h1{
-  font-size:2rem;
-  font-weight:700;
-  color:var(--accent);
-  margin:35px 0 15px;
-  font-family:'Consolas',monospace;
-  position:relative;
-}
+    .terminal-buttons .yellow {
+      background: #ffbd2e;
+    }
 
-header h1:before{
-  content:'$ ';
-  color:var(--success);
-}
+    .terminal-buttons .green {
+      background: #27c93f;
+    }
 
-.site-image{
-  max-width:100%;
-  height:auto;
-  margin:20px 0;
-  border-radius:6px;
-  border:1px solid var(--border);
-  box-shadow:0 8px 24px rgba(0,0,0,0.4);
-}
+    header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin: 35px 0 15px;
+      font-family: 'Consolas', monospace;
+      position: relative;
+    }
 
-/* Sections - Code Block Style */
-section{
-  background:var(--bg-secondary);
-  border:1px solid var(--border);
-  border-left:3px solid var(--accent);
-  margin-bottom:20px;
-  padding:24px;
-  border-radius:6px;
-  transition:border-color 0.2s,transform 0.2s;
-  position:relative;
-}
+    header h1:before {
+      content: '$ ';
+      color: var(--success);
+    }
 
-section:hover{
-  border-left-color:var(--success);
-  transform:translateX(4px);
-}
+    .site-image {
+      max-width: 100%;
+      height: auto;
+      margin: 20px 0;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
 
-section:before{
-  content:'// Section';
-  position:absolute;
-  top:8px;
-  right:12px;
-  font-size:0.75rem;
-  color:var(--text-secondary);
-  font-style:italic;
-}
+    /* Sections - Code Block Style */
+    section {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      margin-bottom: 20px;
+      padding: 24px;
+      border-radius: 6px;
+      transition: border-color 0.2s, transform 0.2s;
+      position: relative;
+    }
 
-section h2{
-  font-size:1.5rem;
-  color:var(--success);
-  margin-bottom:16px;
-  font-weight:600;
-  font-family:'Consolas',monospace;
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
+    section:hover {
+      border-left-color: var(--success);
+      transform: translateX(4px);
+    }
 
-section h2:before{
-  content:'▸';
-  color:var(--accent);
-  font-size:1.2rem;
-}
+    section:before {
+      content: '// Section';
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      font-style: italic;
+    }
 
-section div{
-  font-size:1rem;
-  color:var(--text-primary);
-  line-height:1.8;
-  padding-left:24px;
-  border-left:2px solid var(--bg-tertiary);
-  font-family:'Segoe UI',Arial,sans-serif;
-}
+    section h2 {
+      font-size: 1.5rem;
+      color: var(--success);
+      margin-bottom: 16px;
+      font-weight: 600;
+      font-family: 'Consolas', monospace;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
 
-/* Code-like elements */
-section div:before{
-  content:'';
-  display:inline-block;
-  width:8px;
-  height:8px;
-  background:var(--warning);
-  border-radius:50%;
-  margin-right:8px;
-  vertical-align:middle;
-}
+    section h2:before {
+      content: '▸';
+      color: var(--accent);
+      font-size: 1.2rem;
+    }
 
-/* Info boxes for special sections */
-section:nth-child(odd){
-  border-left-color:var(--warning);
-}
+    section div {
+      font-size: 1rem;
+      color: var(--text-primary);
+      line-height: 1.8;
+      padding-left: 24px;
+      border-left: 2px solid var(--bg-tertiary);
+      font-family: 'Segoe UI', Arial, sans-serif;
+    }
 
-section:last-of-type{
-  border-left-color:var(--success);
-  background:linear-gradient(135deg,var(--bg-secondary) 0%,var(--bg-tertiary) 100%);
-}
+    /* Code-like elements */
+    section div:before {
+      content: '';
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background: var(--warning);
+      border-radius: 50%;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
 
-/* Footer - Status Bar Style */
-footer{
-  background:var(--bg-tertiary);
-  border:1px solid var(--border);
-  border-radius:6px;
-  padding:16px 20px;
-  margin-top:30px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  font-size:0.85rem;
-  color:var(--text-secondary);
-}
+    /* Info boxes for special sections */
+    section:nth-child(odd) {
+      border-left-color: var(--warning);
+    }
 
-footer:before{
-  content:'✓ Build Success';
-  color:var(--success);
-  font-weight:600;
-}
+    section:last-of-type {
+      border-left-color: var(--success);
+      background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+    }
 
-/* Scrollbar */
-::-webkit-scrollbar{width:12px;height:12px;}
-::-webkit-scrollbar-track{background:var(--bg-primary);}
-::-webkit-scrollbar-thumb{
-  background:var(--border);
-  border-radius:6px;
-  border:2px solid var(--bg-primary);
-}
-::-webkit-scrollbar-thumb:hover{background:var(--text-secondary);}
+    /* Footer - Status Bar Style */
+    footer {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 16px 20px;
+      margin-top: 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
 
-/* Selection */
-::selection{
-  background:var(--accent);
-  color:var(--bg-primary);
-}
+    footer:before {
+      content: '✓ Build Success';
+      color: var(--success);
+      font-weight: 600;
+    }
 
-/* Responsive Design */
-@media (max-width:768px){
-  body{padding:15px;}
-  header{padding:25px 20px;}
-  header h1{font-size:1.6rem;margin-top:30px;}
-  section{padding:20px;}
-  section h2{font-size:1.3rem;}
-  section div{font-size:0.95rem;padding-left:16px;}
-  footer{flex-direction:column;gap:10px;text-align:center;}
-}
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 12px;
+      height: 12px;
+    }
 
-@media (max-width:480px){
-  header h1{font-size:1.4rem;}
-  section{padding:16px;margin-bottom:16px;}
-  section h2{font-size:1.2rem;}
-  section div{font-size:0.9rem;padding-left:12px;}
-  section:hover{transform:translateX(0);}
-}
-</style>
+    ::-webkit-scrollbar-track {
+      background: var(--bg-primary);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 6px;
+      border: 2px solid var(--bg-primary);
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--text-secondary);
+    }
+
+    /* Selection */
+    ::selection {
+      background: var(--accent);
+      color: var(--bg-primary);
+    }
+
+    /* Responsive Design */
+    @media (max-width:768px) {
+      body {
+        padding: 15px;
+      }
+
+      header {
+        padding: 25px 20px;
+      }
+
+      header h1 {
+        font-size: 1.6rem;
+        margin-top: 30px;
+      }
+
+      section {
+        padding: 20px;
+      }
+
+      section h2 {
+        font-size: 1.3rem;
+      }
+
+      section div {
+        font-size: 0.95rem;
+        padding-left: 16px;
+      }
+
+      footer {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+      }
+    }
+
+    @media (max-width:480px) {
+      header h1 {
+        font-size: 1.4rem;
+      }
+
+      section {
+        padding: 16px;
+        margin-bottom: 16px;
+      }
+
+      section h2 {
+        font-size: 1.2rem;
+      }
+
+      section div {
+        font-size: 0.9rem;
+        padding-left: 12px;
+      }
+
+      section:hover {
+        transform: translateX(0);
+      }
+    }
+  </style>
 </head>
+
 <body>
-<div class="container">
-<header>
-<div class="terminal-buttons">
-<span class="red"></span>
-<span class="yellow"></span>
-<span class="green"></span>
-</div>
-<h1>{{ title }}</h1>
-{% if image_path %}
-<img src="{{ image_path }}" alt="{{ title }} illustration" class="site-image">
-{% endif %}
-</header>
-{% for sec in sections %}
-<section>
-<h2>{{ sec.heading }}</h2>
-<div>{{ sec.content }}</div>
-</section>
-{% endfor %}
-<footer>
-<small>{{ generated_at }}</small>
-</footer>
-</div>
+  <div class="container">
+    <header>
+      <div class="terminal-buttons">
+        <span class="red"></span>
+        <span class="yellow"></span>
+        <span class="green"></span>
+      </div>
+      <h1>{{ title }}</h1>
+      {% if image_path %}
+      <img src="{{ image_path }}" alt="{{ title }} illustration" class="site-image">
+      {% endif %}
+    </header>
+    {% for sec in sections %}
+    <section>
+      <h2>{{ sec.heading }}</h2>
+      <div>{{ sec.content }}</div>
+    </section>
+    {% endfor %}
+    <footer>
+      <small>{{ generated_at }}</small>
+    </footer>
+  </div>
 </body>
+
 </html>

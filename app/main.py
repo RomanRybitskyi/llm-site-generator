@@ -30,12 +30,10 @@ async def root():
     """Служить фронтенд інтерфейс"""
     frontend_path = os.path.join(os.path.dirname(__file__), "frontend.html")
     
-    # Якщо файл існує, повертаємо його
     if os.path.exists(frontend_path):
         with open(frontend_path, "r", encoding="utf-8") as f:
             return HTMLResponse(content=f.read())
     
-    # Якщо файлу немає, повертаємо вбудований HTML
     return HTMLResponse(content="""
     <!DOCTYPE html>
     <html>
@@ -93,18 +91,15 @@ curl -X POST "http://127.0.0.1:8000/generate" \\
 
 @app.get("/ping")
 async def ping():
-    """Перевірка статусу API"""
     return {"status": "ok", "message": "API is running"}
 
 @app.post("/generate")
 async def generate(req: GenerateRequest):
-    """Генерує сайти на основі запиту"""
-    items = await generator.generate_sites(req)
-    return items
+    response_data = await generator.generate_sites(req)
+    return response_data
 
 @app.get("/site/{site_id}")
 async def get_site(site_id: str):
-    """Отримує згенерований сайт за ID"""
     path = generator.get_site_path(site_id)
     if not path:
         raise HTTPException(status_code=404, detail="Site not found")
@@ -113,8 +108,6 @@ async def get_site(site_id: str):
 
 @app.get("/image/{filename}")
 async def get_image(filename: str):
-    """Отримує зображення за назвою файлу"""
-    # Перевірка безпеки: дозволяємо тільки image_ файли
     if not filename.startswith("image_") or not filename.endswith(".png"):
         raise HTTPException(status_code=400, detail="Invalid image filename")
     
@@ -125,15 +118,12 @@ async def get_image(filename: str):
 
 @app.get("/logs")
 async def logs():
-    """Повертає всі логи генерації"""
     return generator.get_logs()
 
 @app.get("/stats")
 async def stats():
-    """Статистика використання"""
     logs = generator.get_logs()
     
-    # Підрахунок статистики
     total_sites = len([log for log in logs if log.get("site_id")])
     styles_count = {}
     topics_count = {}

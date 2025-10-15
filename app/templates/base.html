@@ -1,106 +1,136 @@
-<!-- app/templates/base.html -->
 <!doctype html>
 <html lang="en">
+
 <head>
-<meta charset="utf-8">
-<title>{{ title }}</title>
-<meta name="description" content="{{ meta_description }}">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<style>
-/* Reset */
-*{margin:0;padding:0;box-sizing:border-box;}
+  <meta charset="utf-8">
+  <title>{{ title }}</title>
+  <meta name="description" content="{{ meta_description }}">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    /* Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-/* Base Styles */
-body{
-  font-family:Arial,Helvetica,sans-serif;
-  line-height:1.6;
-  padding:20px;
-  max-width:900px;
-  margin:auto;
-  background:#f9f9f9;
-  color:#333;
-}
+    /* Base Styles */
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.6;
+      padding: 20px;
+      max-width: 900px;
+      margin: auto;
+      background: #f9f9f9;
+      color: #333;
+    }
 
-header{
-  background:#fff;
-  border-bottom:2px solid #007bff;
-  margin-bottom:20px;
-  padding:20px;
-  border-radius:8px;
-}
+    header {
+      background: #fff;
+      border-bottom: 2px solid #007bff;
+      margin-bottom: 20px;
+      padding: 20px;
+      border-radius: 8px;
+    }
 
-h1{
-  font-size:2rem;
-  color:#333;
-  margin-bottom:10px;
-}
+    h1 {
+      font-size: 2rem;
+      color: #333;
+      margin-bottom: 10px;
+    }
 
-.site-image{
-  max-width:100%;
-  height:auto;
-  margin:15px 0;
-  border-radius:8px;
-  box-shadow:0 2px 8px rgba(0,0,0,0.1);
-}
+    .site-image {
+      max-width: 100%;
+      height: auto;
+      margin: 15px 0;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
 
-section{
-  background:#fff;
-  margin-bottom:18px;
-  padding:20px;
-  border-radius:8px;
-  box-shadow:0 1px 3px rgba(0,0,0,0.1);
-}
+    section {
+      background: #fff;
+      margin-bottom: 18px;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
 
-h2{
-  font-size:1.5rem;
-  margin-bottom:10px;
-  color:#007bff;
-}
+    h2 {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+      color: #007bff;
+    }
 
-section div{
-  color:#555;
-  line-height:1.7;
-}
+    section div {
+      color: #555;
+      line-height: 1.7;
+    }
 
-footer{
-  text-align:center;
-  margin-top:30px;
-  padding-top:20px;
-  border-top:1px solid #ddd;
-  color:#666;
-}
+    footer {
+      text-align: center;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid #ddd;
+      color: #666;
+    }
 
-/* Responsive Design */
-@media (max-width:768px){
-  body{padding:15px;font-size:0.95rem;}
-  h1{font-size:1.8rem;}
-  h2{font-size:1.3rem;}
-  section{padding:15px;}
-}
+    /* Responsive Design */
+    @media (max-width:768px) {
+      body {
+        padding: 15px;
+        font-size: 0.95rem;
+      }
 
-@media (max-width:480px){
-  body{padding:10px;}
-  h1{font-size:1.5rem;}
-  h2{font-size:1.2rem;}
-  section{padding:12px;margin-bottom:15px;}
-}
-</style>
+      h1 {
+        font-size: 1.8rem;
+      }
+
+      h2 {
+        font-size: 1.3rem;
+      }
+
+      section {
+        padding: 15px;
+      }
+    }
+
+    @media (max-width:480px) {
+      body {
+        padding: 10px;
+      }
+
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      h2 {
+        font-size: 1.2rem;
+      }
+
+      section {
+        padding: 12px;
+        margin-bottom: 15px;
+      }
+    }
+  </style>
 </head>
+
 <body>
-<header>
-<h1>{{ title }}</h1>
-{% if image_path %}
-<img src="{{ image_path }}" alt="{{ title }} illustration" class="site-image">
-{% endif %}
-</header>
-{% for sec in sections %}
-<section>
-<h2>{{ sec.heading }}</h2>
-<div>{{ sec.content }}</div>
-</section>
-{% endfor %}
-<footer>
-<small>Generated on {{ generated_at }}</small>
-</footer>
+  <header>
+    <h1>{{ title }}</h1>
+    {% if image_path %}
+    <img src="{{ image_path }}" alt="{{ title }} illustration" class="site-image">
+    {% endif %}
+  </header>
+  {% for sec in sections %}
+  <section>
+    <h2>{{ sec.heading }}</h2>
+    <div>{{ sec.content }}</div>
+  </section>
+  {% endfor %}
+  <footer>
+    <small>Generated on {{ generated_at }}</small>
+  </footer>
 </body>
+
 </html>

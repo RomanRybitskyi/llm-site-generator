@@ -3,7 +3,7 @@ from pydantic import BaseModel, Field, field_validator
 from typing import Optional
 
 class GenerateRequest(BaseModel):
-    """Модель запиту на генерацію сайтів."""
+    """Request model for site generation."""
     
     topic: str = Field(
         ..., 
@@ -50,7 +50,6 @@ class GenerateRequest(BaseModel):
         description="Whether to generate an image for the site"
     )
     
-    # НОВЕ ПОЛЕ
     randomize_temperature: bool = Field(
         default=False,
         description="If True, randomly varies temperature for each generation (0.5-1.2 range)"
@@ -73,7 +72,7 @@ class GenerateRequest(BaseModel):
     @field_validator('style')
     @classmethod
     def validate_style(cls, v: str) -> str:
-        """Валідація та нормалізація стилю."""
+        """Validate and normalize style."""
         allowed_styles = [
             "educational", "marketing", "technical", 
             "minimalist", "creative", "casual"
@@ -89,12 +88,11 @@ class GenerateRequest(BaseModel):
     @field_validator('topic')
     @classmethod
     def validate_topic(cls, v: str) -> str:
-        """Валідація та очищення topic."""
+        """Validate and clean topic."""
         v = v.strip()
         if len(v) < 3:
             raise ValueError("Topic must be at least 3 characters long")
         
-        # Перевірка на підозрілий контент (базова)
         forbidden_words = ['hack', 'exploit', 'malware', 'virus']
         if any(word in v.lower() for word in forbidden_words):
             raise ValueError("Topic contains forbidden keywords")
@@ -104,7 +102,7 @@ class GenerateRequest(BaseModel):
     @field_validator('temperature_max')
     @classmethod
     def validate_temp_range(cls, v: float, info) -> float:
-        """Перевіряє, що temperature_max > temperature_min."""
+        """Ensure temperature_max > temperature_min."""
         if 'temperature_min' in info.data:
             temp_min = info.data['temperature_min']
             if v <= temp_min:

@@ -1,17 +1,17 @@
 # app/prompts.py
 import random
 
-# Секції, які завжди мають бути на початку
+# Always at the beginning
 INTRO_SECTIONS = ["Introduction", "Overview"]
 
-# Основні секції контенту (можуть бути в будь-якому порядку)
+# Core content sections (can be in any order)
 CORE_SECTIONS = [
     "Use Cases", "Technical Details", "Key Features",
     "Tools and Libraries", "Examples", "Comparison",
     "Best Practices", "Common Challenges", "FAQ"
 ]
 
-# Секції, які завжди мають бути в кінці
+# Always at the end
 OUTRO_SECTIONS = ["Summary", "Conclusion", "Summary and CTA"]
 
 STYLE_INSTRUCTIONS = {
@@ -25,29 +25,22 @@ STYLE_INSTRUCTIONS = {
 
 def choose_sections(min_n=3, max_n=5):
     """
-    Вибирає секції у логічному порядку:
-    1. Завжди починає з Introduction або Overview
-    2. Додає 1-3 основні секції з CORE_SECTIONS
-    3. Завжди закінчує секцією Summary/Conclusion
+    Select sections in logical order:
+    1. Start with Introduction or Overview
+    2. Add 1-3 core sections from CORE_SECTIONS
+    3. End with Summary/Conclusion
     """
-    # 1. Вибираємо вступну секцію
     intro = random.choice(INTRO_SECTIONS)
-    
-    # 2. Вибираємо основні секції (min_n-2 до max_n-2, бо є intro та outro)
     core_count = random.randint(max(1, min_n - 2), max(1, max_n - 2))
     core = random.sample(CORE_SECTIONS, min(core_count, len(CORE_SECTIONS)))
-    
-    # 3. Вибираємо завершальну секцію
     outro = random.choice(OUTRO_SECTIONS)
     
-    # Повертаємо в правильному порядку
     return [intro] + core + [outro]
 
 def planning_prompt(topic: str, style: str, existing_titles: list = None):
     sections = choose_sections()
     style_instr = STYLE_INSTRUCTIONS.get(style, STYLE_INSTRUCTIONS["educational"])
 
-    # Новий блок для додавання інструкції про унікальність
     uniqueness_instruction = ""
     if existing_titles:
         titles_str = '", "'.join(existing_titles)
@@ -60,7 +53,7 @@ Focus on a different angle, benefit, or keyword.
     prompt = f"""
 You are an expert web content planner creating a structure for a website about: "{topic}".
 Style: {style} - {style_instr}
-{uniqueness_instruction} # <--- ДОДАНО НОВУ ІНСТРУКЦІЮ
+{uniqueness_instruction}
 
 Create a JSON structure with these fields:
 - title: A compelling, clear title (max 70 characters) that captures the essence of {topic}
@@ -91,12 +84,9 @@ Return the JSON now:"""
 
 
 def writing_prompt(topic: str, style: str, title: str, sections: list) -> str:
-    """
-    Створює промпт для генерації контенту з урахуванням стилю.
-    """
+    """Generate content prompt with style consideration."""
     style_instr = STYLE_INSTRUCTIONS.get(style, STYLE_INSTRUCTIONS["educational"])
     
-    # Додаткові інструкції залежно від стилю
     style_specific = {
         "educational": "Use clear explanations, define terms, provide examples. Write in an informative, structured way.",
         "marketing": "Use persuasive language, emphasize benefits, include strong calls-to-action. Be energetic and engaging.",
@@ -108,7 +98,6 @@ def writing_prompt(topic: str, style: str, title: str, sections: list) -> str:
     
     style_guide = style_specific.get(style, style_specific["educational"])
     
-    # Варіація довжини залежно від стилю
     word_counts = {
         "educational": "80-120",
         "marketing": "60-90",

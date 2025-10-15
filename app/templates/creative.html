@@ -1,208 +1,273 @@
-<!-- app/templates/creative.html -->
 <!doctype html>
 <html lang="en">
+
 <head>
-<meta charset="utf-8">
-<title>{{ title }}</title>
-<meta name="description" content="{{ meta_description }}">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<style>
-/* Creative & Playful Design */
-*{margin:0;padding:0;box-sizing:border-box;}
+  <meta charset="utf-8">
+  <title>{{ title }}</title>
+  <meta name="description" content="{{ meta_description }}">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    /* Creative & Playful Design */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-body{
-  font-family:'Comic Sans MS','Chalkboard SE','Arial Rounded MT Bold',sans-serif;
-  line-height:1.6;
-  color:#2d3436;
-  background:linear-gradient(135deg,#ffeaa7 0%,#fab1a0 50%,#fd79a8 100%);
-  background-attachment:fixed;
-  padding:20px;
-  min-height:100vh;
-}
+    body {
+      font-family: 'Comic Sans MS', 'Chalkboard SE', 'Arial Rounded MT Bold', sans-serif;
+      line-height: 1.6;
+      color: #2d3436;
+      background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 50%, #fd79a8 100%);
+      background-attachment: fixed;
+      padding: 20px;
+      min-height: 100vh;
+    }
 
-.container{
-  max-width:900px;
-  margin:0 auto;
-}
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
 
-/* Playful Header with Rotation */
-header{
-  background:#fff;
-  padding:40px 30px;
-  border-radius:30px;
-  margin-bottom:30px;
-  box-shadow:0 15px 40px rgba(0,0,0,0.15);
-  transform:rotate(-1deg);
-  transition:transform 0.3s;
-}
+    /* Playful Header with Rotation */
+    header {
+      background: #fff;
+      padding: 40px 30px;
+      border-radius: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+      transform: rotate(-1deg);
+      transition: transform 0.3s;
+    }
 
-header:hover{
-  transform:rotate(0deg) scale(1.01);
-}
+    header:hover {
+      transform: rotate(0deg) scale(1.01);
+    }
 
-header h1{
-  font-size:2.5rem;
-  color:#6c5ce7;
-  margin-bottom:20px;
-  text-align:center;
-  text-shadow:3px 3px 0 rgba(108,92,231,0.2);
-  transform:rotate(1deg);
-}
+    header h1 {
+      font-size: 2.5rem;
+      color: #6c5ce7;
+      margin-bottom: 20px;
+      text-align: center;
+      text-shadow: 3px 3px 0 rgba(108, 92, 231, 0.2);
+      transform: rotate(1deg);
+    }
 
-.site-image{
-  max-width:100%;
-  height:auto;
-  margin:25px auto;
-  display:block;
-  border-radius:20px;
-  box-shadow:0 10px 30px rgba(0,0,0,0.2);
-  transform:rotate(-2deg);
-  transition:transform 0.3s;
-}
+    .site-image {
+      max-width: 100%;
+      height: auto;
+      margin: 25px auto;
+      display: block;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      transform: rotate(-2deg);
+      transition: transform 0.3s;
+    }
 
-.site-image:hover{
-  transform:rotate(0deg) scale(1.02);
-}
+    .site-image:hover {
+      transform: rotate(0deg) scale(1.02);
+    }
 
-/* Colorful Sections with Alternating Colors */
-section{
-  background:#fff;
-  margin-bottom:25px;
-  padding:30px;
-  border-radius:25px;
-  box-shadow:0 8px 25px rgba(0,0,0,0.1);
-  position:relative;
-  overflow:hidden;
-  transition:transform 0.3s,box-shadow 0.3s;
-}
+    /* Colorful Sections with Alternating Colors */
+    section {
+      background: #fff;
+      margin-bottom: 25px;
+      padding: 30px;
+      border-radius: 25px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
 
-section:nth-child(odd){
-  transform:rotate(1deg);
-  border-left:8px solid #fd79a8;
-}
+    section:nth-child(odd) {
+      transform: rotate(1deg);
+      border-left: 8px solid #fd79a8;
+    }
 
-section:nth-child(even){
-  transform:rotate(-1deg);
-  border-left:8px solid #6c5ce7;
-}
+    section:nth-child(even) {
+      transform: rotate(-1deg);
+      border-left: 8px solid #6c5ce7;
+    }
 
-section:hover{
-  transform:rotate(0deg) translateY(-5px);
-  box-shadow:0 15px 40px rgba(0,0,0,0.2);
-}
+    section:hover {
+      transform: rotate(0deg) translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+    }
 
-section:before{
-  content:'';
-  position:absolute;
-  top:-50%;
-  right:-50%;
-  width:200%;
-  height:200%;
-  background:radial-gradient(circle,rgba(108,92,231,0.05) 0%,transparent 70%);
-  animation:float 20s ease-in-out infinite;
-}
+    section:before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(108, 92, 231, 0.05) 0%, transparent 70%);
+      animation: float 20s ease-in-out infinite;
+    }
 
-@keyframes float{
-  0%,100%{transform:translate(0,0) rotate(0deg);}
-  25%{transform:translate(10px,-10px) rotate(5deg);}
-  50%{transform:translate(-10px,10px) rotate(-5deg);}
-  75%{transform:translate(10px,10px) rotate(3deg);}
-}
+    @keyframes float {
 
-section h2{
-  font-size:1.8rem;
-  color:#6c5ce7;
-  margin-bottom:15px;
-  position:relative;
-  z-index:1;
-  display:inline-block;
-}
+      0%,
+      100% {
+        transform: translate(0, 0) rotate(0deg);
+      }
 
-section:nth-child(even) h2{
-  color:#fd79a8;
-}
+      25% {
+        transform: translate(10px, -10px) rotate(5deg);
+      }
 
-section h2:after{
-  content:'✨';
-  margin-left:10px;
-  display:inline-block;
-  animation:sparkle 2s ease-in-out infinite;
-}
+      50% {
+        transform: translate(-10px, 10px) rotate(-5deg);
+      }
 
-@keyframes sparkle{
-  0%,100%{transform:scale(1) rotate(0deg);opacity:1;}
-  50%{transform:scale(1.2) rotate(180deg);opacity:0.7;}
-}
+      75% {
+        transform: translate(10px, 10px) rotate(3deg);
+      }
+    }
 
-section div{
-  font-size:1.05rem;
-  color:#2d3436;
-  line-height:1.8;
-  position:relative;
-  z-index:1;
-}
+    section h2 {
+      font-size: 1.8rem;
+      color: #6c5ce7;
+      margin-bottom: 15px;
+      position: relative;
+      z-index: 1;
+      display: inline-block;
+    }
 
-/* Fun Footer */
-footer{
-  background:#fff;
-  padding:25px;
-  border-radius:20px;
-  text-align:center;
-  margin-top:30px;
-  box-shadow:0 8px 25px rgba(0,0,0,0.1);
-  transform:rotate(1deg);
-}
+    section:nth-child(even) h2 {
+      color: #fd79a8;
+    }
 
-footer small{
-  color:#636e72;
-  font-size:0.9rem;
-}
+    section h2:after {
+      content: '✨';
+      margin-left: 10px;
+      display: inline-block;
+      animation: sparkle 2s ease-in-out infinite;
+    }
 
-footer:before{
-  content:'🎨 ';
-}
+    @keyframes sparkle {
 
-footer:after{
-  content:' 🎨';
-}
+      0%,
+      100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+      }
 
-/* Responsive */
-@media (max-width:768px){
-  body{padding:15px;}
-  header{padding:30px 25px;transform:rotate(0);}
-  header h1{font-size:2rem;}
-  section{padding:25px;margin-bottom:20px;}
-  section:nth-child(odd),section:nth-child(even){transform:rotate(0);}
-  section h2{font-size:1.5rem;}
-  .site-image{transform:rotate(0);}
-  footer{transform:rotate(0);}
-}
+      50% {
+        transform: scale(1.2) rotate(180deg);
+        opacity: 0.7;
+      }
+    }
 
-@media (max-width:480px){
-  header h1{font-size:1.7rem;}
-  section{padding:20px;}
-  section h2{font-size:1.3rem;}
-  section div{font-size:1rem;}
-}
-</style>
+    section div {
+      font-size: 1.05rem;
+      color: #2d3436;
+      line-height: 1.8;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Fun Footer */
+    footer {
+      background: #fff;
+      padding: 25px;
+      border-radius: 20px;
+      text-align: center;
+      margin-top: 30px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+      transform: rotate(1deg);
+    }
+
+    footer small {
+      color: #636e72;
+      font-size: 0.9rem;
+    }
+
+    footer:before {
+      content: '🎨 ';
+    }
+
+    footer:after {
+      content: ' 🎨';
+    }
+
+    /* Responsive */
+    @media (max-width:768px) {
+      body {
+        padding: 15px;
+      }
+
+      header {
+        padding: 30px 25px;
+        transform: rotate(0);
+      }
+
+      header h1 {
+        font-size: 2rem;
+      }
+
+      section {
+        padding: 25px;
+        margin-bottom: 20px;
+      }
+
+      section:nth-child(odd),
+      section:nth-child(even) {
+        transform: rotate(0);
+      }
+
+      section h2 {
+        font-size: 1.5rem;
+      }
+
+      .site-image {
+        transform: rotate(0);
+      }
+
+      footer {
+        transform: rotate(0);
+      }
+    }
+
+    @media (max-width:480px) {
+      header h1 {
+        font-size: 1.7rem;
+      }
+
+      section {
+        padding: 20px;
+      }
+
+      section h2 {
+        font-size: 1.3rem;
+      }
+
+      section div {
+        font-size: 1rem;
+      }
+    }
+  </style>
 </head>
+
 <body>
-<div class="container">
-<header>
-<h1>{{ title }}</h1>
-{% if image_path %}
-<img src="{{ image_path }}" alt="{{ title }} illustration" class="site-image">
-{% endif %}
-</header>
-{% for sec in sections %}
-<section>
-<h2>{{ sec.heading }}</h2>
-<div>{{ sec.content }}</div>
-</section>
-{% endfor %}
-<footer>
-<small>{{ generated_at }}</small>
-</footer>
-</div>
+  <div class="container">
+    <header>
+      <h1>{{ title }}</h1>
+      {% if image_path %}
+      <img src="{{ image_path }}" alt="{{ title }} illustration" class="site-image">
+      {% endif %}
+    </header>
+    {% for sec in sections %}
+    <section>
+      <h2>{{ sec.heading }}</h2>
+      <div>{{ sec.content }}</div>
+    </section>
+    {% endfor %}
+    <footer>
+      <small>{{ generated_at }}</small>
+    </footer>
+  </div>
 </body>
+
 </html>
