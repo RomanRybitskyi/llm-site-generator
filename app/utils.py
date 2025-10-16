@@ -3,6 +3,7 @@ import os
 import uuid
 from datetime import datetime
 from transformers import AutoTokenizer
+from bs4 import BeautifulSoup
 
 tokenizer = AutoTokenizer.from_pretrained("mistralai/Mixtral-8x7B-Instruct-v0.1")
 
@@ -21,3 +22,9 @@ def count_tokens(text: str) -> int:
     if not text:
         return 0
     return len(tokenizer.encode(text))
+
+def get_site_content_from_html(html_content: str) -> str:
+    soup = BeautifulSoup(html_content, "html.parser")
+    for script in soup(["script", "style"]):
+        script.extract()
+    return soup.get_text(separator=" ", strip=True)
